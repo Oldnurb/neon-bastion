@@ -4,74 +4,121 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
   <meta name="theme-color" content="#050710" />
-  <title>Neon Bastion</title>
+  <title>Neon Bastion V2 – Trend Prototype</title>
   <link rel="stylesheet" href="styles.css" />
 </head>
 <body>
   <div id="app">
     <header class="topbar">
-      <div class="resource"><span>$</span><strong id="money">0</strong></div>
-      <div class="resource"><span>⬡</span><strong id="cores">0</strong></div>
-      <div class="resource shard"><span>◇</span><strong id="shards">0</strong></div>
+      <div class="brand">
+        <strong>NEON BASTION</strong>
+        <small>V2 · EXTRACT PROTOCOL</small>
+      </div>
+
+      <div class="resources">
+        <div class="resource"><span>$</span><strong id="money">0</strong></div>
+        <div class="resource scrap"><span>◆</span><strong id="runScrap">0</strong></div>
+        <div class="resource vault"><span>⬢</span><strong id="vaultScrap">0</strong></div>
+      </div>
 
       <div class="top-actions">
-        <button id="waveInfoBtn" class="icon-btn" title="Wellen-Info">i</button>
+        <button id="waveInfoBtn" class="icon-btn" title="Info">i</button>
         <button id="pauseBtn" class="icon-btn" title="Pause">Ⅱ</button>
-        <button id="restartBtn" class="icon-btn danger" title="Neustart">↻</button>
+        <button id="restartBtn" class="icon-btn danger" title="Run neu starten">↻</button>
       </div>
     </header>
 
     <main class="arena-wrap">
-      <canvas id="gameCanvas" aria-label="Neon Bastion Spielfeld"></canvas>
+      <canvas id="gameCanvas"></canvas>
 
-      <section class="hud-card player-card">
-        <div class="hud-row">
-          <span>⚔ <strong id="hudDamage">6.0</strong></span>
-          <span>♥ <strong id="hudHp">100 / 100</strong></span>
-          <span>◎ <strong id="hudIncome">x1.00</strong></span>
-        </div>
-        <div class="bar"><div id="hpBar" class="bar-fill hp"></div></div>
-      </section>
-
-      <section class="hud-card wave-card">
-        <div class="wave-line">
-          <span>Welle <strong id="wave">1</strong></span>
-          <span id="enemyCount">0 Gegner</span>
-        </div>
-        <div class="bar"><div id="waveBar" class="bar-fill wave"></div></div>
-        <small id="waveStatus">Bereit</small>
-      </section>
+      <div class="heat-badge">
+        <span>HEAT</span>
+        <strong id="heatLabel">x1.00</strong>
+      </div>
 
       <div class="speed-controls">
         <button id="speedDown" class="mini-btn">−</button>
         <span id="speedLabel">x1</span>
         <button id="speedUp" class="mini-btn">+</button>
       </div>
+
+      <button id="overdriveBtn" class="overdrive-btn">
+        <span>OVERDRIVE</span>
+        <strong id="overdriveLabel">READY</strong>
+      </button>
+
+      <section class="hud-card player-card">
+        <div class="hud-row">
+          <span>⚔ <strong id="hudDamage">0</strong></span>
+          <span>♥ <strong id="hudHp">0 / 0</strong></span>
+          <span>◎ <strong id="hudIncome">x1.00</strong></span>
+        </div>
+        <div class="bar"><div id="hpBar" class="bar-fill hp"></div></div>
+        <div id="shieldLine" class="shield-line">Schild 0 / 0</div>
+      </section>
+
+      <section class="hud-card wave-card">
+        <div class="wave-line">
+          <span>Welle <strong id="wave">1</strong></span>
+          <span id="enemyCount">0 übrig</span>
+        </div>
+        <div class="bar"><div id="waveBar" class="bar-fill wave"></div></div>
+        <small id="waveStatus">Start</small>
+      </section>
     </main>
 
     <nav class="tabs">
       <button class="tab active" data-tab="attack">⚔ Angriff</button>
       <button class="tab" data-tab="defense">⬟ Verteidigung</button>
-      <button class="tab" data-tab="utility">★ Bonus</button>
+      <button class="tab" data-tab="tech">★ Tech</button>
     </nav>
 
     <section id="upgradePanel" class="upgrade-panel"></section>
   </div>
 
-  <dialog id="waveDialog" class="modal">
+  <dialog id="augmentDialog" class="modal">
     <div class="modal-inner">
-      <button id="closeWaveDialog" class="modal-close">×</button>
-      <h2 id="waveDialogTitle">Wellen-Info</h2>
-      <div id="waveDialogBody"></div>
+      <div class="kicker">ROGUELITE AUGMENT</div>
+      <h2>Wähle 1 Upgrade</h2>
+      <p class="muted">Kostenlos. Gilt bis zum Ende dieses Runs.</p>
+      <div id="augmentChoices" class="choice-grid"></div>
     </div>
   </dialog>
 
-  <dialog id="gameOverDialog" class="modal">
+  <dialog id="extractDialog" class="modal">
+    <div class="modal-inner extract">
+      <div class="kicker">EXTRACTION CHECKPOINT</div>
+      <h2>Raus oder tiefer?</h2>
+      <p>Deine volatile Beute: <strong id="extractScrap">0</strong> ◆</p>
+      <p>Wenn du stirbst, rettest du nur <strong>25%</strong>. Extrahierst du jetzt, wird alles permanent im Vault gesichert.</p>
+      <div class="extract-actions">
+        <button id="extractBtn" class="primary-btn safe">EXTRAHIEREN</button>
+        <button id="pushBtn" class="primary-btn risk">TIEFER GEHEN</button>
+      </div>
+      <small class="muted">Push: Heat, Gegnerstärke und Beute steigen.</small>
+    </div>
+  </dialog>
+
+  <dialog id="infoDialog" class="modal">
+    <div class="modal-inner">
+      <button id="closeInfoBtn" class="modal-close">×</button>
+      <div class="kicker">RUN INFO</div>
+      <h2 id="infoTitle">Welle</h2>
+      <div id="infoBody"></div>
+    </div>
+  </dialog>
+
+  <dialog id="resultDialog" class="modal">
     <div class="modal-inner centered">
-      <h2>CORE ZERSTÖRT</h2>
-      <p>Du hast Welle <strong id="finalWave">1</strong> erreicht.</p>
-      <p>Bestwert: <strong id="bestWave">1</strong></p>
-      <button id="playAgainBtn" class="primary-btn">Nochmal</button>
+      <div id="resultKicker" class="kicker">RUN ENDE</div>
+      <h2 id="resultTitle">CORE ZERSTÖRT</h2>
+      <p id="resultText"></p>
+      <div class="result-stats">
+        <div><span>Welle</span><strong id="finalWave">1</strong></div>
+        <div><span>Bestwert</span><strong id="bestWave">1</strong></div>
+        <div><span>Vault</span><strong id="finalVault">0</strong></div>
+      </div>
+      <button id="newRunBtn" class="primary-btn">NEUER RUN</button>
     </div>
   </dialog>
 
