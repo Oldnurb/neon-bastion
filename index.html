@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta name="theme-color" content="#050710" />
+  <title>Neon Bastion</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <div id="app">
+    <header class="topbar">
+      <div class="resource"><span>$</span><strong id="money">0</strong></div>
+      <div class="resource"><span>⬡</span><strong id="cores">0</strong></div>
+      <div class="resource shard"><span>◇</span><strong id="shards">0</strong></div>
+
+      <div class="top-actions">
+        <button id="waveInfoBtn" class="icon-btn" title="Wellen-Info">i</button>
+        <button id="pauseBtn" class="icon-btn" title="Pause">Ⅱ</button>
+        <button id="restartBtn" class="icon-btn danger" title="Neustart">↻</button>
+      </div>
+    </header>
+
+    <main class="arena-wrap">
+      <canvas id="gameCanvas" aria-label="Neon Bastion Spielfeld"></canvas>
+
+      <section class="hud-card player-card">
+        <div class="hud-row">
+          <span>⚔ <strong id="hudDamage">6.0</strong></span>
+          <span>♥ <strong id="hudHp">100 / 100</strong></span>
+          <span>◎ <strong id="hudIncome">x1.00</strong></span>
+        </div>
+        <div class="bar"><div id="hpBar" class="bar-fill hp"></div></div>
+      </section>
+
+      <section class="hud-card wave-card">
+        <div class="wave-line">
+          <span>Welle <strong id="wave">1</strong></span>
+          <span id="enemyCount">0 Gegner</span>
+        </div>
+        <div class="bar"><div id="waveBar" class="bar-fill wave"></div></div>
+        <small id="waveStatus">Bereit</small>
+      </section>
+
+      <div class="speed-controls">
+        <button id="speedDown" class="mini-btn">−</button>
+        <span id="speedLabel">x1</span>
+        <button id="speedUp" class="mini-btn">+</button>
+      </div>
+    </main>
+
+    <nav class="tabs">
+      <button class="tab active" data-tab="attack">⚔ Angriff</button>
+      <button class="tab" data-tab="defense">⬟ Verteidigung</button>
+      <button class="tab" data-tab="utility">★ Bonus</button>
+    </nav>
+
+    <section id="upgradePanel" class="upgrade-panel"></section>
+  </div>
+
+  <dialog id="waveDialog" class="modal">
+    <div class="modal-inner">
+      <button id="closeWaveDialog" class="modal-close">×</button>
+      <h2 id="waveDialogTitle">Wellen-Info</h2>
+      <div id="waveDialogBody"></div>
+    </div>
+  </dialog>
+
+  <dialog id="gameOverDialog" class="modal">
+    <div class="modal-inner centered">
+      <h2>CORE ZERSTÖRT</h2>
+      <p>Du hast Welle <strong id="finalWave">1</strong> erreicht.</p>
+      <p>Bestwert: <strong id="bestWave">1</strong></p>
+      <button id="playAgainBtn" class="primary-btn">Nochmal</button>
+    </div>
+  </dialog>
+
+  <script src="game.js"></script>
+</body>
+</html>
