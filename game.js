@@ -355,15 +355,26 @@
     }
 
     state.waveTime += dt;
-    state.spawnAccumulator += dt * spawnRate();
 
     const bossWave = state.wave % 10 === 0;
     const spawnCap = bossWave ? 1 + Math.floor(state.wave / 10) : maxActiveEnemies();
 
-    while (state.spawnAccumulator >= 1 && state.enemies.length < spawnCap) {
-      spawnEnemy();
-      state.spawnAccumulator -= 1;
-      if (bossWave && state.enemiesSpawned >= 1 + Math.floor(state.wave / 10)) break;
+    // WICHTIG: Gegner dürfen nur während des eigentlichen Wellen-Timers spawnen.
+    // Sobald der Timer abgelaufen ist, werden nur noch die Restgegner beseitigt.
+    if (state.waveTime < state.waveDuration) {
+      state.spawnAccumulator += dt * spawnRate();
+
+      while (state.spawnAccumulator >= 1 && state.enemies.length < spawnCap) {
+        spawnEnemy();
+        state.spawnAccumulator -= 1;
+
+        if (bossWave && state.enemiesSpawned >= 1 + Math.floor(state.wave / 10)) {
+          break;
+        }
+      }
+    } else {
+      // Verhindert, dass sich nach Ablauf des Timers noch Spawn-Zeit ansammelt.
+      state.spawnAccumulator = 0;
     }
 
     if (state.waveTime >= state.waveDuration && state.enemies.length === 0) {
@@ -426,7 +437,7 @@
     state.particles = state.particles.filter(p => p.life > 0);
 
     if (state.waveTime >= state.waveDuration && state.enemies.length > 0) {
-      UI.waveStatus.textContent = "Restgegner beseitigen";
+      UI.waveStatus.textContent = `Restgegner: ${state.enemies.length}`;
     } else {
       UI.waveStatus.textContent = `Nächste Welle in ${Math.max(0, Math.ceil(state.waveDuration - state.waveTime))}s`;
     }
